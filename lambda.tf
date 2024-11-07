@@ -4,11 +4,13 @@ provider "aws" {
 
 # IAM Role for Lambda
 resource "aws_iam_role" "lambda_role" {
-  name = "lambda_exec_role_2"
+  name = "${var.prefix}-lambda_exec_role_2"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
-      Action = "sts:AssumeRole",
+      Action = [
+        "sts:AssumeRole"
+      ]
       Effect = "Allow",
       Principal = {
         Service = "lambda.amazonaws.com"
@@ -47,7 +49,7 @@ data "archive_file" "lambda_zip" {
 # see  https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function.html
 
 resource "aws_lambda_function" "hello_world" {
-  function_name = "hello_world_lambda"
+  function_name = "${var.prefix}-hello_world_lambda"
   role          = aws_iam_role.lambda_role.arn
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.9"
